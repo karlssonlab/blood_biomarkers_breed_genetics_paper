@@ -19,3 +19,4 @@ Analysis and figure generation scripts for the manuscript
 
 #### All input data files (including supplemental data tables of the mansucript in R's RDS format) are available in DataDryad at DOI: 10.5061/dryad.sxksn03hq
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1234567.svg)](https://doi.org/10.5281/zenodo.1234567)
