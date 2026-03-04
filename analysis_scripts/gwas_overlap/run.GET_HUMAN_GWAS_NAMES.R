@@ -10,7 +10,6 @@ library(googlesheets4)  # Append results to Google Sheets
 ## ================================
 ##  Inputs / constants
 ## ================================
-supp_data_url <- "https://docs.google.com/spreadsheets/d/1-fWTNQvS2NeeVVcO1eoI9pIOiuh_NFO9tI5K_wfuDyA/"
 alt_url <- "https://docs.google.com/spreadsheets/d/1JmhdoWwaedZUDA1azA7a7QQGUEC3pQ95s5XrxPM21UM/"
 
 # Allowlist of PubMed IDs to keep from the GWAS Catalog
@@ -25,7 +24,7 @@ ok_pubmedIDs <- c(
 sigP <- 5e-8
 
 # Local GWAS Catalog associations file (TSV)
-in_gwas_catalog <- "infiles/gwas_catalog_v1.0-associations_e113_r2025-02-08.tsv"
+in_gwas_catalog <- "../../data/human_dog_GWAS_intersect/gwas_catalog_v1.0-associations_e113_r2025-02-08.tsv"
 
 
 ## ================================
@@ -97,6 +96,7 @@ Return ONE JSON object:
 "
 
 
+
 ## ================================
 ##  OpenAI call helper
 ## ================================
@@ -164,11 +164,10 @@ TRAITS:
   
   res <- call_openai_once(user_prompt)
   
-  # Defensive check: the prompt requires a `results` array
-  if (!\"results\" %in% names(res)) {
+  if (!"results" %in% names(res)) {
     stop(
-      \"OpenAI response missing 'results' field. Got:\\n\",
-      paste(capture.output(str(res)), collapse = \"\\n\")
+      "OpenAI response missing 'results' field. Got:\n",
+      paste(capture.output(str(res)), collapse = "\n")
     )
   }
   
@@ -317,6 +316,6 @@ for (batch_i in seq_along(idx_batches)) {
   sheet_append(
     data = results_out,
     ss = alt_url,
-    sheet = "Data S_HUMAN_TRAITS"
+    sheet = "Data S_HUMAN_TRAITS" ### this output is in DataDryad repository in S_HUMAN_TRAITS.tsv
   )
 }

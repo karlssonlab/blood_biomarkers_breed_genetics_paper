@@ -70,21 +70,49 @@ sigP <- 5e-8
 sugP <- 1e-6 
 
 # Google Sheets sources
-supp_data_url <- "https://docs.google.com/spreadsheets/d/1-fWTNQvS2NeeVVcO1eoI9pIOiuh_NFO9tI5K_wfuDyA/"
+#supp_data_url <- "https://docs.google.com/spreadsheets/d/1-fWTNQvS2NeeVVcO1eoI9pIOiuh_NFO9tI5K_wfuDyA/"
 alt_url <- "https://docs.google.com/spreadsheets/d/1JmhdoWwaedZUDA1azA7a7QQGUEC3pQ95s5XrxPM21UM/"
+
+
+# Create empty table with desired columns
+empty_df <- tibble(
+  standard_name = character(),
+  human_trait_name = character(),
+  score = numeric(),
+  rationale = character()
+)
+
+# Check if sheet exists
+if (!("Data S_TRAIT_MATCH" %in% sheet_names(alt_url))) {
+  
+  sheet_write(
+    ss = alt_url,
+    data = empty_df,
+    sheet = "Data S_TRAIT_MATCH"
+  )
+  
+}
+
+# ------------------------------------------------------------------------------
+# Load data objects (only if not already present in the current R environment)
+# ------------------------------------------------------------------------------
+
+if (!exists("dat")) {
+  dat <- readRDS("../../data/DAP_supp_data.rds")
+  list2env(dat, .GlobalEnv) 
+}
 
 ## -----------------------------------
 ## Load input tables (only if not already in memory)
 ## -----------------------------------
 
-if (!exists("raw_gwas_overlap") | !exists("raw_bloodPhenos")){
-  raw_gwas_dog <- as_tibble(read_sheet(supp_data_url, sheet = "Data S3_GWAS_REGIONS", na = "NA"))
-  raw_gwas_overlap <- as_tibble(read.delim("../../data/human_dog_GWAS_intersect/working.GWAS_RAW_OVERLAP.tsv",na.strings=c("NA",""),header=T))
-  raw_bloodPhenos <- as_tibble(read_sheet(supp_data_url, sheet = "Table S2_ALL_PHENOS", na = "NA"))
+if (!exists("raw_gwas_overlap")){
+raw_gwas_overlap <- as_tibble(read.delim("../../data/human_dog_GWAS_intersect/S_GWAS_RAW_OVERLAP.tsv",na.strings=c("NA",""),header=T))
+#  raw_S2_ALL_PHENOS <- as_tibble(read_sheet(supp_data_url, sheet = "Table S2_ALL_PHENOS", na = "NA"))
 }
 
 # Restrict to blood-measured phenotypes of interest and keep label/name columns used downstream
-bloodPhenos <- raw_bloodPhenos %>% filter(paper_phenotype_category %in% c("Clinical analytes","Plasma metabolites")) %>% 
+bloodPhenos <- raw_S2_ALL_PHENOS %>% filter(paper_phenotype_category %in% c("Clinical analytes","Plasma metabolites")) %>% 
   select(phenotype,plot_label,standard_name) %>% distinct()
 
 ## -----------------------------------
@@ -95,7 +123,10 @@ make_pairs <- function() {
   # Use global `all` (prepared later) and keep a local copy for transformations
   all_F <- all
   matchingF <- as_tibble(read_sheet(alt_url, sheet = "Data S_TRAIT_MATCH", na = "NA"))
-  
+  matchingF <- matchingF %>% mutate(standard_name=as.character(standard_name),
+                                    human_trait_name=as.character(human_trait_name),
+                                    score=as.numeric(score),
+                                    rationale=as.character(rationale))
   # Identify already-scored pairs (excluding generic human traits) with strong matches (score <= 2)
   foundF <- all_F %>% left_join(matchingF,join_by(standard_name, human_trait_name))
   foundF <- foundF %>% filter(!is.na(score)) %>% filter(human_trait_name!="metabolite"&human_trait_name!="cholesterol") %>% group_by(standard_name,region) %>% summarize(score=min(score))
@@ -335,20 +366,18 @@ all <- all %>% arrange(-region_P,-human_P)
 ## Main loop: repeatedly pick unscored pairs, score them, and write back to Google Sheet
 ## -----------------------------------
 
-for (i in 1:500){
+for (i in 1:5){
   # Refresh current matching table from the sheet each iteration to avoid overwriting remote edits
   matching <- as_tibble(read_sheet(alt_url, sheet = "Data S_TRAIT_MATCH", na = "NA"))
   
   # Select next batch of pairs to score and call the API
   pairs_df <- make_pairs()
   results <- score_pairs_df(pairs_df) 
-  
-  # Append new results and write the full table back to the sheet
-  matching <- matching %>% bind_rows(results %>% rename(standard_name=trait1,	human_trait_name=trait2))
+  print(dim(matching))
   sheet_write(
     ss = alt_url,
     data = matching,
-    sheet = "Data S_TRAIT_MATCH"
+    sheet = "Data S_TRAIT_MATCH" ### this output is in S_TRAIT_MATCH.tsv in data Dryad
   )
   
   # Drop large objects between iterations

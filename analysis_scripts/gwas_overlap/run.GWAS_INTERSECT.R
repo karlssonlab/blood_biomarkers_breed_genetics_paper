@@ -15,6 +15,7 @@ sugP <- 1e-6
 # ================================
 # 2) Input file paths
 # ================================
+### Can be downloaded from https://www.ebi.ac.uk/gwas/docs/file-downloads
 in_gwas_catalog <- "../../data/human_dog_GWAS_intersect/gwas_catalog_v1.0-associations_e113_r2025-02-08.tsv"
 
 # ================================

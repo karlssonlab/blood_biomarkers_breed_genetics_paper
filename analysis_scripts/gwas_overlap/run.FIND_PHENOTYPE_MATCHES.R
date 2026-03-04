@@ -5,9 +5,6 @@ library(tidyverse)      # dplyr/tidyr pipelines used throughout for data wrangli
 sigP <- 5e-8            # genome-wide significance threshold (human GWAS context)
 sugP <- 1e-6             # suggestive significance threshold (used to filter dog regions)
 
-# Google Sheet URL for supplemental tables (kept as reference; script reads local TSVs below)
-supp_data_url <- "https://docs.google.com/spreadsheets/d/1-fWTNQvS2NeeVVcO1eoI9pIOiuh_NFO9tI5K_wfuDyA/"
-
 # ----- 2. Load precomputed overlap/matching tables (from local TSVs) -----
 # Only load if not already present in the environment
 if (!exists("raw_gwas_overlap")  | !exists("raw_matching")){
@@ -94,3 +91,7 @@ all <- all %>% left_join(overlap)
 all <- all %>% distinct() %>% left_join(overlap)
 all <- all %>% select(phenotype,region,CHR,region_start,region_end,region_P,lifted_over,overlap_human_peak,gwas_catalog_trait_name,match_score,match_type,log_human_P,PUBMEDID) %>% 
   distinct() %>% arrange(region_P) %>% mutate(human_P=10**-log_human_P) %>% select(-log_human_P)
+
+#### REMOVE TO MAKE NEW GOOGLE SHEET
+#write_sheet(data = all,ss = supp_data_url,sheet = "Data S4_GWAS_OVERLAP")
+
