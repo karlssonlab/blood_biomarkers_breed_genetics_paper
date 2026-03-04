@@ -1,6 +1,5 @@
 # blood_biomarkers_breed_genetics_paper
-Analysis and figure generation scripts for the manuscript: 
-Blood biomarkers and breed genetics of aging in pet dogs
+Analysis and figure generation scripts for the manuscript "Blood biomarkers and breed genetics of aging in pet dogs"
 
 The `analysis_scripts` directory contains scripts used for running the following analyses:
 
