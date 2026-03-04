@@ -13,8 +13,8 @@ The `analysis_scripts` directory contains scripts used for running the following
 
 * Rscripts needed to assess the degree of overlap between dog and human blood trait genetic associations are available in `gwas_overlap`.
 
-The `figure_generation_plotting_scripts` directory includes all Rscripts needed to create the main and supplemental figures of the manuscript. Main figure Rscripts are titled plot_fig_${#}_${description}, while supplemental figure Rscripts are called plot_fig_S${#}_${description}.  
+The `figure_generation_plotting_scripts` directory includes all Rscripts needed to create the main and supplemental figures of the manuscript.
 
 
-Input data files (including supplemental data tables of mansucript as an RDS file) are available in DataDryad at DOI: 10.5061/dryad.sxksn03hq
+All input data files (including supplemental data tables of the mansucript in R's RDS format) are available in DataDryad at DOI: 10.5061/dryad.sxksn03hq
 
