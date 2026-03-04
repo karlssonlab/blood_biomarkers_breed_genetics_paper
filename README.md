@@ -2,7 +2,7 @@
 Analysis and figure generation scripts for the manuscript
 ### Blood biomarkers and breed genetics of aging in pet dogs
 
-The `analysis_scripts` directory contains scripts used for running the following analyses:
+#### The `analysis_scripts` directory contains scripts used for running the following analyses:
 
 * Rscripts to run ANOVA on blood traits can be found in `anova`. 
 
@@ -14,8 +14,8 @@ The `analysis_scripts` directory contains scripts used for running the following
 
 * Rscripts needed to assess the degree of overlap between dog and human blood trait genetic associations are available in `gwas_overlap`.
 
-The `figure_generation_plotting_scripts` directory includes all Rscripts needed to create the main and supplemental figures of the manuscript.
+#### The `figure_generation_plotting_scripts` directory includes all Rscripts needed to create the main and supplemental figures of the manuscript.
 
 
-All input data files (including supplemental data tables of the mansucript in R's RDS format) are available in DataDryad at DOI: 10.5061/dryad.sxksn03hq
+#### All input data files (including supplemental data tables of the mansucript in R's RDS format) are available in DataDryad at DOI: 10.5061/dryad.sxksn03hq
 
